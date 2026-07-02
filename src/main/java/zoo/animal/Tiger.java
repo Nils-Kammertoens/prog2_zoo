@@ -1,0 +1,9 @@
+package zoo.animal;
+
+public record Tiger(String name) implements Cat {
+  public Tiger {
+    if (name == null || name.isBlank()) {
+      throw new IllegalArgumentException("name must not be blank");
+    }
+  }
+}
