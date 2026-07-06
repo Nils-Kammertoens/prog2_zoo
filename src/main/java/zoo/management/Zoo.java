@@ -6,6 +6,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -62,6 +63,26 @@ public class Zoo {
       LOG.warning(() -> "Kein Gehege mit dem Namen '%s' gefunden.".formatted(name));
     } else {
       logFineState("findEnclosureByName");
+    }
+
+    return result;
+  }
+
+  public Optional<Animal> findAnimalByName(String animalName) {
+    LOG.info(() -> "findAnimalByName(animalName=%s)".formatted(animalName));
+    Objects.requireNonNull(animalName, "animalName must not be null");
+
+    Optional<Animal> result =
+        enclosures.stream()
+            .map(enclosure -> enclosure.findAnimalByName(animalName))
+            .flatMap(Optional::stream)
+            .map(Animal.class::cast)
+            .findFirst();
+
+    if (result.isEmpty()) {
+      LOG.warning(() -> "Kein Tier mit dem Namen '%s' gefunden.".formatted(animalName));
+    } else {
+      LOG.fine(() -> "Gefundenes Tier: " + result.orElseThrow());
     }
 
     return result;
